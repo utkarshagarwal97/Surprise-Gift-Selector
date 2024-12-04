@@ -164,6 +164,52 @@ def main():
             
             save_data(items, skipped_items, marked_off_items)
 
+        elif choice == "5":
+            # View purchased items and spending graph
+            if marked_off_items:
+                print("\n🛒 Purchased Gifts:")
+                print(tabulate(marked_off_items, headers=["Gift Name", "Priority", "Price"], tablefmt="pretty"))
+                show_spending_graph(marked_off_items)
+            else:
+                print("No gifts have been marked as purchased yet.")
+
+        elif choice == "6":
+            # View skipped items
+            if skipped_items:
+                print("\n⏩ Skipped Items:")
+                print(tabulate(skipped_items, headers=["Gift Name", "Priority"], tablefmt="pretty"))
+            else:
+                print("No items have been skipped yet.")
+
+        elif choice == "7":
+            # Search or filter items
+            query = input("Enter the item name or priority to search: ").strip()
+            results = [item for item in items if query.lower() in item[0].lower() or (query.isdigit() and int(query) == int(item[1]))]
+            if results:
+                print("\nSearch Results:")
+                print(tabulate(results, headers=["Gift Name", "Priority"], tablefmt="pretty"))
+            else:
+                print("No matching items found.")
+
+        elif choice == "8":
+            # Edit an item
+            print("\nEdit an Item:")
+            print(tabulate(items, headers=["Index", "Gift Name", "Priority"], showindex=True, tablefmt="pretty"))
+            index = input("Enter the index of the item to edit: ").strip()
+            if index.isdigit() and 0 <= int(index) < len(items):
+                index = int(index)
+                print(f"Editing '{items[index][0]}' (Priority: {items[index][1]})")
+                new_name = input("Enter new name (or press Enter to keep current): ").strip().title()
+                new_priority = input("Enter new priority (0-10, or press Enter to keep current): ").strip()
+                if new_name:
+                    items[index][0] = new_name
+                if new_priority.isdigit() and 0 <= int(new_priority) <= 10:
+                    items[index][1] = int(new_priority)
+                print(f"Item updated to: {items[index][0]} (Priority: {items[index][1]})")
+                save_data(items, skipped_items, marked_off_items)
+            else:
+                print("Invalid index.")
+
         elif choice == "9":
             # Exit the program
             print("👋 Goodbye! See you next time! 🎁")
